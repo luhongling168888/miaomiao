@@ -13,6 +13,10 @@ export default new VueRouter({
   routes: [
 	MovieRouter,
 	CinemaRouter,
-	MineRouter
+	MineRouter,
+	{
+		path: "/",
+		redirect: '/movie'
+	}
   ]
 })
