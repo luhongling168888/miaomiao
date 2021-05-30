@@ -4,80 +4,21 @@
 			<div class="city_hot">
 				<h2>热门城市</h2>
 				<ul class="clearfix">
-					<li>上海</li>
-					<li>北京</li>
-					<li>上海</li>
-					<li>北京</li>
-					<li>上海</li>
-					<li>北京</li>
-					<li>上海</li>
-					<li>北京</li>
+					<li v-for="data in hotList" :key="data.cityId">{{data.name}}</li>
 				</ul>
 			</div>
-			<div class="city_sort">
-				<div>
-					<h2>A</h2>
+			<div class="city_sort" ref="city_sort">
+				<div v-for="itme in cityList" :key="itme.index">
+					<h2>{{itme.index}}</h2>
 					<ul>
-						<li>阿拉善盟</li>
-						<li>鞍山</li>
-						<li>安庆</li>
-						<li>安阳</li>
+						<li v-for="data in itme.list" :key="data.id">{{data.name}}</li>
 					</ul>
 				</div>
-				<div>
-					<h2>B</h2>
-					<ul>
-						<li>北京</li>
-						<li>保定</li>
-						<li>蚌埠</li>
-						<li>包头</li>
-					</ul>
-				</div>
-				<div>
-					<h2>A</h2>
-					<ul>
-						<li>阿拉善盟</li>
-						<li>鞍山</li>
-						<li>安庆</li>
-						<li>安阳</li>
-					</ul>
-				</div>
-				<div>
-					<h2>B</h2>
-					<ul>
-						<li>北京</li>
-						<li>保定</li>
-						<li>蚌埠</li>
-						<li>包头</li>
-					</ul>
-				</div>
-				<div>
-					<h2>A</h2>
-					<ul>
-						<li>阿拉善盟</li>
-						<li>鞍山</li>
-						<li>安庆</li>
-						<li>安阳</li>
-					</ul>
-				</div>
-				<div>
-					<h2>B</h2>
-					<ul>
-						<li>北京</li>
-						<li>保定</li>
-						<li>蚌埠</li>
-						<li>包头</li>
-					</ul>
-				</div>	
 			</div>
 		</div>
 		<div class="city_index">
 			<ul>
-				<li>A</li>
-				<li>B</li>
-				<li>C</li>
-				<li>D</li>
-				<li>E</li>
+				<li v-for="(itme,index) in cityList" :key="itme.index" @click="handleIndex(index)">{{itme.index}}</li>
 			</ul>
 		</div>
 	</div>
@@ -85,7 +26,86 @@
 
 <script>
 export default {
-	name: "City"
+	name: "City",
+	data(){
+		return{
+			cityList: [],
+			hotList: []
+		}
+	},
+	mounted() {
+		this.axios({
+			url: "https://m.maizuo.com/gateway?k=7002583",
+			headers: {
+				'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"16220848331422012132098049"}',
+				'X-Host': 'mall.film-ticket.city.list'
+			}
+		}).then(res => {
+			var msg = res.data.msg;
+			if(msg === "ok"){
+				var cities = res.data.data.cities;
+				var { cityList,hotList } = this.handleCityArr(cities);
+				this.cityList = cityList;
+				this.hotList = hotList;
+			}
+			
+		})
+	},
+	methods:{
+		handleCityArr(cities){
+			var cityList = [];
+			var hotList = [];
+			
+			for(var i =0; i<cities.length;i++ ){
+				if(cities[i].isHot === 1){
+					hotList.push(cities[i])
+				}
+			}
+			
+			for(var i = 0; i< cities.length; i++){
+				var firstLetter = cities[i].pinyin.substring(0,1).toUpperCase();
+				if(toCom(firstLetter)){
+					cityList.push({index: firstLetter, list: [{name: cities[i].name, id: cities[i].cityId}]})
+				}else{
+					for(var j =0; j < cityList.length; j++ ){
+						if(cityList[j].index === firstLetter){
+							cityList[j].list.push({name: cities[i].name, id: cities[i].cityId});
+						}
+					}
+				}
+			}
+			
+			cityList.sort((n1,n2) => {
+				if(n1.index > n2.index){
+					return 1;
+				}else if(n1.index < n2.index) {
+					return -1
+				}else{
+					return 0;
+				}
+			})
+			
+			function toCom(firstLetter) {
+				for(var i = 0;i < cityList.length; i++){
+					if(cityList[i].index === firstLetter){
+						return false;
+					}
+				}
+				return true;
+			}
+			
+			return {
+				cityList,
+				hotList
+			}
+		},
+		
+		handleIndex(index){
+			var h2 = this.$refs.city_sort.getElementsByTagName("h2");
+			this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop;
+		}
+	}
+	
 }
 </script>
 
