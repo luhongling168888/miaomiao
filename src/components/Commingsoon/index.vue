@@ -1,19 +1,21 @@
 <template>
 	<div class="movie_body">
-		<ul>
-			<li v-for="item in commingList" :key="item.filmId">
-				<div class="pic_show"><img :src="item.poster"></div>
-				<div class="info_list">
-					<h2>{{item.name}}<img v-if="item.item.name === '3D'" src="@/assets/maxs.png" /></h2>
-					<p>观众评 <span class="grade">{{item.grade}}</span></p>
-					<p>主演: {{item.actors | actorsfilter}}</p>
-					<p>今天55家影院放映607场</p>
-				</div>
-				<div class="btn_mall">
-					购票
-				</div>
-			</li>
-		</ul>
+		<Scroller>
+			<ul>
+				<li v-for="item in commingList" :key="item.filmId">
+					<div class="pic_show"><img :src="item.poster"></div>
+					<div class="info_list">
+						<h2>{{item.name}}<img v-if="item.item.name === '3D'" src="@/assets/maxs.png" /></h2>
+						<p>观众评 <span class="grade">{{item.grade}}</span></p>
+						<p>主演: {{item.actors | actorsfilter}}</p>
+						<p>今天55家影院放映607场</p>
+					</div>
+					<div class="btn_mall">
+						购票
+					</div>
+				</li>
+			</ul>
+		</Scroller>
 	</div>
 </template>
 
@@ -45,7 +47,7 @@ export default {
 </script>
 
 <style scoped>
-#content .movie_body{ flex:1; overflow:auto;}
+#content .movie_body{ flex:1; overflow:auto; overflow: hidden;}
 .movie_body ul{ margin:0 12px; overflow: hidden;}
 .movie_body ul li{ margin-top:12px; display: flex; align-items:center; border-bottom: 1px #e6e6e6 solid; padding-bottom: 10px;}
 .movie_body .pic_show{ width:64px; height: 90px;}
