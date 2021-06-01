@@ -1,21 +1,24 @@
 <template>
 	<div class="cinema_body">
-		<ul>
-			<li v-for="itme in ciList" :key="itme.cinemaId">
-				<div>
-					<span>{{itme.name}}</span>
-					<span class="q"><span class="price">{{itme.lowPrice/100}}</span> 元起</span>
-				</div>
-				<div class="address">
-					<span>{{itme.address}}</span>
-					<span>1763.5km</span>
-				</div>
-				<div class="card">
-	    			<div>小吃</div>
-	    			<div>折扣卡</div>
-				</div>
-			</li>
-		</ul>
+		<Loading v-if="isLoading" />
+		<Scroller v-else>
+			<ul>
+				<li v-for="itme in ciList" :key="itme.cinemaId">
+					<div>
+						<span>{{itme.name}}</span>
+						<span class="q"><span class="price">{{itme.lowPrice/100}}</span> 元起</span>
+					</div>
+					<div class="address">
+						<span>{{itme.address}}</span>
+						<span>1763.5km</span>
+					</div>
+					<div class="card">
+						<div>小吃</div>
+						<div>折扣卡</div>
+					</div>
+				</li>
+			</ul>
+		</Scroller>
 	</div>
 </template>
 
@@ -25,7 +28,8 @@ export default {
 	name: "CiList",
 	data(){
 		return {
-			ciList: []
+			ciList: [],
+			isLoading: true
 		}
 	},
 	mounted() {
@@ -36,8 +40,8 @@ export default {
 				'X-Host': 'mall.film-ticket.cinema.list'
 			}
 		}).then(res => {
-			console.log(res.data)
-			this.ciList = res.data.data.cinemas
+			this.ciList = res.data.data.cinemas;
+			this.isLoading = false;
 		})
 	}
 }

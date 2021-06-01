@@ -19,26 +19,30 @@ export default {
 	    }
 	},
 	mounted() {
-		this.$nextTick(() => {
-			var scroll = new BScroll( this.$refs.wrapper , {
-				tap : true,
-				probeType: 1,
-			});
-			
-			console.log(scroll)
-			
-			scroll.on('scroll',(pos)=>{
-				this.handleToScroll(pos);
-			});
-			
-			scroll.on('touchEnd',(pos)=>{
-				this.handleToTouchEnd(pos);
-			});
-		})	
+		var scroll = new BScroll( this.$refs.wrapper , {
+		    tap: true,
+			click: true,
+		    probeType: 1
+		});
+		
+		this.scroll = scroll;
+		
+		scroll.on('scroll',(pos)=>{
+		    this.handleToScroll(pos);
+		});
+		
+		scroll.on('touchEnd',(pos)=>{
+		    this.handleToTouchEnd(pos);
+		});
+	},
+	methods:{
+		toScrollTop(y){
+			this.scroll.scrollTo(0,y);
+		}
 	}
 }
 </script>
 
 <style scoped>
-.wrapper{height: 100%; overflow: hidden;}
+.wrapper{height: 100%;}
 </style>

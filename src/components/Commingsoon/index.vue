@@ -1,6 +1,7 @@
 <template>
 	<div class="movie_body">
-		<Scroller>
+		<Loading v-if="isloading" />
+		<Scroller v-else>
 			<ul>
 				<li v-for="item in commingList" :key="item.filmId">
 					<div class="pic_show"><img :src="item.poster"></div>
@@ -25,7 +26,8 @@ export default {
 	name: "Commingsoon",
 	data(){
 		return {
-			commingList: []
+			commingList: [],
+			isloading: true
 		}
 	},
 	mounted() {
@@ -38,7 +40,8 @@ export default {
 		}).then(res => {
 			var msg = res.data.msg;
 			if(msg === "ok"){
-				this.commingList = res.data.data.films
+				this.commingList = res.data.data.films;
+				this.isloading = false;
 			}
 		})
 	}
@@ -47,7 +50,7 @@ export default {
 </script>
 
 <style scoped>
-#content .movie_body{ flex:1; overflow:auto; overflow: hidden;}
+#content .movie_body{ flex:1; overflow:auto;}
 .movie_body ul{ margin:0 12px; overflow: hidden;}
 .movie_body ul li{ margin-top:12px; display: flex; align-items:center; border-bottom: 1px #e6e6e6 solid; padding-bottom: 10px;}
 .movie_body .pic_show{ width:64px; height: 90px;}

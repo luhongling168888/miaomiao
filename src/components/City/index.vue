@@ -1,20 +1,25 @@
 <template>
 	<div class="city_body">
 		<div class="city_list">
-			<div class="city_hot">
-				<h2>热门城市</h2>
-				<ul class="clearfix">
-					<li v-for="data in hotList" :key="data.cityId">{{data.name}}</li>
-				</ul>
-			</div>
-			<div class="city_sort" ref="city_sort">
-				<div v-for="itme in cityList" :key="itme.index">
-					<h2>{{itme.index}}</h2>
-					<ul>
-						<li v-for="data in itme.list" :key="data.id">{{data.name}}</li>
-					</ul>
+			<Loading v-if="isLoading" />
+			<Scroller v-else ref="city_list">
+				<div>
+					<div class="city_hot">
+						<h2>热门城市</h2>
+						<ul class="clearfix">
+							<li v-for="data in hotList" :key="data.cityId">{{data.name}}</li>
+						</ul>
+					</div>
+					<div class="city_sort" ref="city_sort">
+						<div v-for="itme in cityList" :key="itme.index">
+							<h2>{{itme.index}}</h2>
+							<ul>
+								<li v-for="data in itme.list" :key="data.id">{{data.name}}</li>
+							</ul>
+						</div>
+					</div>
 				</div>
-			</div>
+			</Scroller>
 		</div>
 		<div class="city_index">
 			<ul>
@@ -30,26 +35,39 @@ export default {
 	data(){
 		return{
 			cityList: [],
-			hotList: []
+			hotList: [],
+			isLoading: true
 		}
 	},
 	mounted() {
-		this.axios({
-			url: "https://m.maizuo.com/gateway?k=7002583",
-			headers: {
-				'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"16220848331422012132098049"}',
-				'X-Host': 'mall.film-ticket.city.list'
-			}
-		}).then(res => {
-			var msg = res.data.msg;
-			if(msg === "ok"){
-				var cities = res.data.data.cities;
-				var { cityList,hotList } = this.handleCityArr(cities);
-				this.cityList = cityList;
-				this.hotList = hotList;
-			}
-			
-		})
+		var cityList = window.localStorage.getItem("cityList");
+		var hotList = window.localStorage.getItem("hotList");
+		if(cityList && hotList){
+			this.cityList = JSON.parse(cityList)
+			this.hotList = JSON.parse(hotList)
+			this.isLoading = false;
+		}else{
+			this.axios({
+				url: "https://m.maizuo.com/gateway?k=7002583",
+				headers: {
+					'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"16220848331422012132098049"}',
+					'X-Host': 'mall.film-ticket.city.list'
+				}
+			}).then(res => {
+				var msg = res.data.msg;
+				if(msg === "ok"){
+					var cities = res.data.data.cities;
+					var { cityList,hotList } = this.handleCityArr(cities);
+					this.cityList = cityList;
+					this.hotList = hotList;
+					window.localStorage.setItem("cityList", JSON.stringify(cityList))
+					window.localStorage.setItem("hotList", JSON.stringify(hotList))
+					this.isLoading = false;
+					
+				}
+				
+			})
+		}
 	},
 	methods:{
 		handleCityArr(cities){
@@ -102,7 +120,8 @@ export default {
 		
 		handleIndex(index){
 			var h2 = this.$refs.city_sort.getElementsByTagName("h2");
-			this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop;
+			// this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop;
+			this.$refs.city_list.toScrollTop(-h2[index].offsetTop)
 		}
 	}
 	

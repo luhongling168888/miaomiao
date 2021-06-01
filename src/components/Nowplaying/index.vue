@@ -1,6 +1,7 @@
 <template>
 	<div class="movie_body" ref="movie_body">
-		<Scroller :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">	
+		<Loading v-if="isLoading" />
+		<Scroller v-else :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">	
 			<ul>
 				<li class="pullDown">{{pullDownMsg}}</li>
 				<li v-for="item in movieList" :key="item.filmId">
@@ -27,7 +28,8 @@ export default {
 	data(){
 		return {
 			movieList: [],
-			pullDownMsg: ""
+			pullDownMsg: "",
+			isLoading: true
 		}
 	},
 	mounted() {
@@ -40,7 +42,8 @@ export default {
 		}).then(res => {
 			var msg = res.data.msg;
 			if(msg === "ok"){
-				this.movieList = res.data.data.films;
+				this.movieList =  res.data.data.films;
+				this.isLoading = false;
 			}
 		});
 	},
