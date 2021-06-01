@@ -7,14 +7,14 @@
 					<div class="city_hot">
 						<h2>热门城市</h2>
 						<ul class="clearfix">
-							<li v-for="data in hotList" :key="data.cityId">{{data.name}}</li>
+							<li v-for="data in hotList" :key="data.cityId" @click="handleToCity(data.name,data.cityId)">{{data.name}}</li>
 						</ul>
 					</div>
 					<div class="city_sort" ref="city_sort">
 						<div v-for="itme in cityList" :key="itme.index">
 							<h2>{{itme.index}}</h2>
 							<ul>
-								<li v-for="data in itme.list" :key="data.id">{{data.name}}</li>
+								<li v-for="data in itme.list" :key="data.id" @click="handleToCity(data.name,data.id)">{{data.name}}</li>
 							</ul>
 						</div>
 					</div>
@@ -122,6 +122,12 @@ export default {
 			var h2 = this.$refs.city_sort.getElementsByTagName("h2");
 			// this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop;
 			this.$refs.city_list.toScrollTop(-h2[index].offsetTop)
+		},
+		handleToCity(name,cityId){
+			this.$store.commit("City/CITY_INFO", {name,cityId});
+			window.localStorage.setItem("nowName", name)
+			window.localStorage.setItem("nowCityId", cityId)
+			this.$router.push("/movie/nowplaying");
 		}
 	}
 	

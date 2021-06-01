@@ -29,12 +29,17 @@ export default {
 	data(){
 		return {
 			ciList: [],
-			isLoading: true
+			isLoading: true,
+			prevCityId: -1
 		}
 	},
-	mounted() {
+	activated() {
+		var cityId = this.$store.state.City.cityId;
+		if(this.prevCityId === cityId){return;}
+		this.isLoading = true;
+		
 		axios({
-			url: "https://m.maizuo.com/gateway?cityId=440100&ticketFlag=1&k=615337",
+			url: `https://m.maizuo.com/gateway?cityId=${cityId}&ticketFlag=1&k=615337`,
 			headers: {
 				'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"16218222751230443705794561","bc":"440100"}',
 				'X-Host': 'mall.film-ticket.cinema.list'
@@ -42,6 +47,7 @@ export default {
 		}).then(res => {
 			this.ciList = res.data.data.cinemas;
 			this.isLoading = false;
+			this.prevCityId = cityId;
 		})
 	}
 }

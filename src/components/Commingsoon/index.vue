@@ -9,7 +9,7 @@
 						<h2>{{item.name}}<img v-if="item.item.name === '3D'" src="@/assets/maxs.png" /></h2>
 						<p>观众评 <span class="grade">{{item.grade}}</span></p>
 						<p>主演: {{item.actors | actorsfilter}}</p>
-						<p>今天55家影院放映607场</p>
+						<p>{{item.nation}}|{{item.runtime}}分钟</p>
 					</div>
 					<div class="btn_mall">
 						购票
@@ -27,12 +27,18 @@ export default {
 	data(){
 		return {
 			commingList: [],
-			isloading: true
+			isloading: true,
+			prevCityId: -1
 		}
 	},
-	mounted() {
+	activated() {
+		
+		var cityId = this.$store.state.City.cityId;
+		if(this.prevCityId === cityId){return;}
+		this.isLoading = true;
+		
 		this.axios({
-			url: 'https://m.maizuo.com/gateway?cityId=440100&pageNum=1&pageSize=10&type=2&k=2711016',
+			url: `https://m.maizuo.com/gateway?cityId=${cityId}&pageNum=1&pageSize=10&type=2&k=2711016`,
 			headers: {
 				'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"16219099991298557592141825","bc":"440100"}',
 				'X-Host': 'mall.film-ticket.film.list'
@@ -42,6 +48,7 @@ export default {
 			if(msg === "ok"){
 				this.commingList = res.data.data.films;
 				this.isloading = false;
+				this.prevCityId = cityId;
 			}
 		})
 	}
