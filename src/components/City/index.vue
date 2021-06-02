@@ -55,6 +55,7 @@ export default {
 				}
 			}).then(res => {
 				var msg = res.data.msg;
+				
 				if(msg === "ok"){
 					var cities = res.data.data.cities;
 					var { cityList,hotList } = this.handleCityArr(cities);

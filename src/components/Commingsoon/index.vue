@@ -4,10 +4,10 @@
 		<Scroller v-else>
 			<ul>
 				<li v-for="item in commingList" :key="item.filmId">
-					<div class="pic_show"><img :src="item.poster"></div>
+					<div class="pic_show" @click="handleDetail(item.filmId)"><img :src="item.poster"></div>
 					<div class="info_list">
-						<h2>{{item.name}}<img v-if="item.item.name === '3D'" src="@/assets/maxs.png" /></h2>
-						<p>观众评 <span class="grade">{{item.grade}}</span></p>
+						<h2 @click="handleDetail(item.filmId)">{{item.name}}<img v-if="item.item.name === '3D'" src="@/assets/maxs.png" /></h2>
+						<p>观众评分： <span class="grade">{{item.grade}}</span></p>
 						<p>主演: {{item.actors | actorsfilter}}</p>
 						<p>{{item.nation}}|{{item.runtime}}分钟</p>
 					</div>
@@ -51,6 +51,11 @@ export default {
 				this.prevCityId = cityId;
 			}
 		})
+	},
+	methods:{
+		handleDetail(filmId){
+			this.$router.push("/movie/detail/2/" + filmId);
+		}
 	}
 	
 }
