@@ -6,6 +6,7 @@
 
 <script>
 import BScroll from "better-scroll";
+import Pullup from '@better-scroll/pull-up'
 export default {
 	name: "Scroller",
 	props : {
@@ -16,12 +17,19 @@ export default {
 	    handleToTouchEnd : {
 	        type : Function,
 	        default : function(){}
-	    }
+	    },
+		handleToPullingUp : {
+		    type : Function,
+		    default : function(){}
+		},
 	},
 	mounted() {
 		var scroll = new BScroll( this.$refs.wrapper , {
 		    tap: true,
 			click: true,
+			pullUpLoad: {
+				threshold: -20
+			},
 		    probeType: 1
 		});
 		
@@ -34,6 +42,13 @@ export default {
 		scroll.on('touchEnd',(pos)=>{
 		    this.handleToTouchEnd(pos);
 		});
+		scroll.on('pullingUp',() => {
+			this.handleToPullingUp();
+			setTimeout(() =>{
+				this.scroll.finishPullUp();
+				this.scroll.refresh();	
+			},3000);
+		})
 	},
 	methods:{
 		toScrollTop(y){

@@ -1,7 +1,7 @@
 <template>
 	<div class="movie_body" ref="movie_body">
 		<Loading v-if="isLoading" />
-		<Scroller v-else :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">	
+		<Scroller v-else :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd" :handleToPullingUp="handleToPullingUp">	
 			<ul>
 				<li class="pullDown">{{pullDownMsg}}</li>
 				<li v-for="item in movieList" :key="item.filmId">
@@ -30,7 +30,9 @@ export default {
 			movieList: [],
 			pullDownMsg: "",
 			isLoading: true,
-			prevCityId: -1
+			prevCityId: -1,
+			current: 1,
+			total: 0
 		}
 	},
 	activated() {
@@ -84,8 +86,22 @@ export default {
 						}, 1000)
 					}
 				})
-				
 			}
+		},
+		handleToPullingUp(){
+			this.current ++;
+			if(this.movieList.length === this.total){
+				return ;
+			};
+			this.axios({
+				url: `https://m.maizuo.com/gateway?cityId=440100&pageNum=${this.current}&pageSize=10&type=1&k=9161640`,
+				headers: {
+					'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"16219099991298557592141825","bc":"440100"}',
+					'X-Host': 'mall.film-ticket.film.list'
+				}
+			}).then(res => {
+				this.movieList = [...this.movieList, ...res.data.data.films];
+			});
 		}
 	}
 }

@@ -1,7 +1,7 @@
 <template>
 	<div class="movie_body">
 		<Loading v-if="isloading" />
-		<Scroller v-else>
+		<Scroller v-else :handleToPullingUp="handleToPullingUp">
 			<ul>
 				<li v-for="item in commingList" :key="item.filmId">
 					<div class="pic_show" @click="handleDetail(item.filmId)"><img :src="item.poster"></div>
@@ -28,7 +28,9 @@ export default {
 		return {
 			commingList: [],
 			isloading: true,
-			prevCityId: -1
+			prevCityId: -1,
+			current: 1,
+			total: 0
 		}
 	},
 	activated() {
@@ -55,6 +57,26 @@ export default {
 	methods:{
 		handleDetail(filmId){
 			this.$router.push("/movie/detail/2/" + filmId);
+		},
+		
+		handleToPullingUp(){
+			this.current ++;
+			var cityId = this.$store.state.City.cityId;
+			if(this.commingList.length === this.total){
+				return ;
+			};
+			this.axios({
+				url: `https://m.maizuo.com/gateway?cityId=${cityId}&pageNum=${this.current}&pageSize=10&type=2&k=2711016`,
+				headers: {
+					'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"16219099991298557592141825","bc":"440100"}',
+					'X-Host': 'mall.film-ticket.film.list'
+				}
+			}).then(res => {
+				var msg = res.data.msg;
+				if(msg === "ok"){
+					this.commingList = [...this.commingList, ...res.data.data.films];
+				}
+			})
 		}
 	}
 	
