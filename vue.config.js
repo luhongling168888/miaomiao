@@ -1,4 +1,5 @@
 module.exports = {
+	publicPath: '/maomao',
     devServer : {
         proxy : {
             '/ajax' : {

@@ -55,7 +55,7 @@ export default {
 					this.movieList = res.data.movies.list
 				}
 			}).catch(err => {
-				if (axios.isCancel(err)) {
+				if (this.axios.isCancel(err)) {
 					console.log('Rquest canceled', err.message); //请求如果被取消，这里是返回取消的message
 				} else {
 					//handle error
