@@ -24,30 +24,30 @@ export default {
 		},
 	},
 	mounted() {
-		var scroll = new BScroll( this.$refs.wrapper , {
-		    tap: true,
-			click: true,
-			pullUpLoad: {
-				threshold: -20
-			},
-		    probeType: 1
-		});
-		
-		this.scroll = scroll;
-		
-		scroll.on('scroll',(pos)=>{
-		    this.handleToScroll(pos);
-		});
-		
-		scroll.on('touchEnd',(pos)=>{
-		    this.handleToTouchEnd(pos);
-		});
-		scroll.on('pullingUp',() => {
-			this.handleToPullingUp();
-			setTimeout(() =>{
+		this.$nextTick(() => {
+			var scroll = new BScroll( this.$refs.wrapper , {
+			    tap: true,
+				click: true,
+				pullUpLoad: {
+					threshold: -20
+				},
+			    probeType: 1
+			});
+			
+			this.scroll = scroll;
+			
+			scroll.on('scroll',(pos)=>{
+			    this.handleToScroll(pos);
+			});
+			
+			scroll.on('touchEnd',(pos)=>{
+			    this.handleToTouchEnd(pos);
+			});
+			scroll.on('pullingUp',() => {
+				this.handleToPullingUp();
 				this.scroll.finishPullUp();
 				this.scroll.refresh();	
-			},3000);
+			})
 		})
 	},
 	methods:{
