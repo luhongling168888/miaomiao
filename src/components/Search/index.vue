@@ -41,10 +41,10 @@ export default {
 	},
 	watch: {
 		message(newval){
-			
+			console.log(newval)
+			var that = this;
 			this.cancelRequest();
-			var that = this
-			this.axios.get(`/ajax/search?kw=${newval}&cityId=1&stype=-1`,{
+			this.axios.get(`/apollo/ajax/search?kw=${newval}&cityId=1&stype=-1`,{
 				cancelToken: new this.axios.CancelToken(function executor(c) {
 					that.source = c;
 				})
